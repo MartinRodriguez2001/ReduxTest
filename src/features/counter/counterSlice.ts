@@ -9,13 +9,13 @@ import type { RootState, AppThunk } from "@/app/store"
 import { fetchCount } from "./counterAPI"
 
 // Define the TS type for the counter slice's state
-export interface CounterState {
+export interface CounterState { // Tipo de dato que maneja el initialState
   value: number
   status: "idle" | "loading" | "failed"
 }
 
 // Define the initial value for the slice state
-const initialState: CounterState = {
+const initialState: CounterState = { // Valor inicial del Slice
   value: 0,
   status: "idle",
 }
@@ -80,12 +80,25 @@ export const selectStatus = (state: RootState) => state.counter.status
 // that has access to both `dispatch` and `getState`. They can be dispatched like
 // a regular action: `dispatch(incrementIfOdd(10))`.
 // Here's an example of conditionally dispatching actions based on current state.
-export const incrementIfOdd = (amount: number): AppThunk => {
+export const incrementIfOdd = (amount: number): AppThunk => { //Devuelve un thunk porque devuelve otra función en lugar de una acción simple
+  return (dispatch, getState) => { //recibe 'dispatch' y 'getState'
+    console.log(getState())
+    const currentValue = selectCount(getState()) // obtiene el valor actual del estado
+    console.log(currentValue)
+    if (currentValue % 2 === 1) { // incrementa el valos solo si es impar
+      dispatch(incrementByAmount(amount)) // llama a la acción 'incrementByAmount
+      console.log("dispatch",dispatch(incrementByAmount(amount)))
+      const despachoPay = dispatch(incrementByAmount(amount))
+      console.log("payload",despachoPay.payload)
+
+    }
+  }
+}
+
+export const raizCuadrada = (amount: number): AppThunk => {
   return (dispatch, getState) => {
     const currentValue = selectCount(getState())
-    if (currentValue % 2 === 1) {
-      dispatch(incrementByAmount(amount))
-    }
+   
   }
 }
 
@@ -99,6 +112,8 @@ export const incrementAsync = createAsyncThunk(
   "counter/fetchCount",
   async (amount: number) => {
     const response = await fetchCount(amount)
+    console.log("respuest",response)
+    console.log("data",response.data)
     // The value we return becomes the `fulfilled` action payload
     return response.data
   },
